@@ -1,0 +1,161 @@
+openapi: 3.0.1
+info:
+  title: API de Usuarios
+  version: 1.0.0
+  description: Documentación de endpoints del módulo Users
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor local
+
+paths:
+  /users:
+    get:
+      summary: Obtiene todos los usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+  /users/{uid}:
+    parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de usuario
+    get:
+      summary: Obtiene un usuario por ID
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  payload:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'error'
+                  error:
+                    type: string
+                    example: 'User not found'
+    put:
+      summary: Actualiza un usuario existente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  payload:
+                    $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+    delete:
+      summary: Elimina un usuario
+      responses:
+        '200':
+          description: Usuario eliminado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'success'
+                  message:
+                    type: string
+                    example: 'User deleted'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: 'error'
+                  error:
+                    type: string
+                    example: 'User not found'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: '60f8a2...'
+        firstName:
+          type: string
+          example: 'Mariano'
+        lastName:
+          type: string
+          example: 'Romero'
+        email:
+          type: string
+          format: email
+          example: 'user@example.com'
+        role:
+          type: string
+          enum: ['user', 'admin']
+          example: 'user'
+        pets:
+          type: array
+          items:
+            type: string
+          example: []
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UserUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+      required: []
